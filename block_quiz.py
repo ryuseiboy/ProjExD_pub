@@ -10,7 +10,10 @@ ques_list = [(["fig/shin.jpg","fig/ori.jpg","fig/zophi.jpg","fig/jack.jpg"],
               ["シン・ウルトラマン","ウルトラマン","ゾフィー","ウルトラマンジャック"]),
 
              (["fig/kirin.png", "fig/raion.png", "fig/ti-ta-.png", "fig/tora.png"],
-              ["キリン", "ライオン", "チーター", "トラ"])
+              ["キリン", "ライオン", "チーター", "トラ"]),
+
+              (['fig/keppengin.jpg', 'fig/panda.jpg', 'fig/raion.jpg', 'fig/ressapanda.jpg'],
+              ['ケープペンギン', 'パンダ', 'ライオン', 'レッサーパンダ'])
             ]
 ques, choi = random.choice(ques_list)      #画像ファイルリスト, 選択肢リスト (ランダムな組み合わせが選ばれる)
 

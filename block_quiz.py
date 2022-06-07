@@ -24,6 +24,8 @@ ans_jud = 0
 
 isStart = False # スタートフラグ　青柳
 
+isFinsh = False
+
 class Screen(pg.sprite.Sprite): # Screen生成
   def __init__(self, col, wh, title):                    # 色,幅と高さ(タプル),タイトル
     super().__init__()
@@ -230,7 +232,7 @@ class Text(pg.sprite.Sprite): #テキスト用クラス
     self.rect.bottom = y 
 
 def main():
-  global jud
+  global jud, isFinsh
   num = random.randint(0,3) #正解判定用ナンバー
   clock = pg.time.Clock()
   screen = Screen((0,0,0),(450,900),"BloQuiz")
@@ -282,7 +284,8 @@ def main():
     paddle.update()                               # paddleの位置更新
     screen.disp.blit(paddle.image, paddle.rect)           # paddle画像更新
 
-    blos.draw(screen.disp) #ブロック画像更新
+    if isFinsh == False:
+      blos.draw(screen.disp) #ブロック画像更新
 
     ball.update() #ballの位置更新
     screen.disp.blit(ball.image,ball.rect) #ball画像更新
@@ -304,6 +307,7 @@ def main():
             but[1].push()
             but[2].push()
             but[3].push()
+            isFinsh = True
       # isStartとjudがTrueの場合タイマー開始 青柳
       if isStart and jud:
         if event.type == pg.USEREVENT:

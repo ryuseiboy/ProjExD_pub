@@ -25,3 +25,7 @@ https://algorithm.joho.info/programming/python/pygame-blockout/
 ↑ブロック崩しのコードとして参考にした。各関数の処理を参考にし、ボールを落とした時の処理をする関数などに応用した。
 https://jizogames.com/python/button/
 ↑Pygameにはボタンオブジェクトがないため、ボタン実装のために参考にした。
+
+### 追加機能
+- C0B21146 美尾勇希
+    - これまでは1種類しか問題を用意できなかったが、複数の問題の中からランダムに出題できるようにした。

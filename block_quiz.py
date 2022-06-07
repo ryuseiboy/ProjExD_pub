@@ -1,10 +1,7 @@
-from turtle import color
 import pygame as pg
 import sys
 import random
 import math
-import pygame.mixer
-from pygame.locals import *
 
 ques = ["fig/shin.jpg","fig/ori.jpg","fig/zophi.jpg","fig/jack.jpg"] #画像ファイルリスト
 choi =["シン・ウルトラマン","ウルトラマン","ゾフィー","ウルトラマンジャック"] #選択肢テキスト用リスト

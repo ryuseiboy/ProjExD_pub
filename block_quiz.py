@@ -188,7 +188,7 @@ class OutWall(pg.sprite.Sprite):
     self.screen = sc
     pg.draw.rect(self.image, (255,0,0), (100,100,500,500))
     self.rect = self.image.get_rect()
-    
+    self.rect.centery = 515
 
 
 class Button(pg.sprite.Sprite): #ボタン用クラス
@@ -249,7 +249,6 @@ def main():
 
   #当たったらだめの壁を生成
   kabe=OutWall((500,10),(255,0,0),screen)
-  screen.disp.blit(kabe.image,kabe.rect)
 
   #ボタンの作成
   cnt =0
@@ -272,14 +271,14 @@ def main():
     cont += 1
  
   while True:
-    screen.disp.fill((0,0,0))            # Screen画像更新
+    screen.disp.fill((255,255,255))            # Screen画像更新
 
     screen.disp.blit(question.image,question.rect) #question画像更新
 
     paddle.update()                               # paddleの位置更新
     screen.disp.blit(paddle.image, paddle.rect)           # paddle画像更新
 
-
+    screen.disp.blit(kabe.image, kabe.rect)
     blos.draw(screen.disp) #ブロック画像更新
 
     ball.update() #ballの位置更新
@@ -291,8 +290,8 @@ def main():
 
     texts.draw(screen.disp)
 
-    kabe.update()
-    screen.disp.blit(kabe.image, kabe.rect)
+    
+    
 
     for event in pg.event.get():
       if event.type == pg.QUIT: return               # ✕ボタンでmain関数から戻る

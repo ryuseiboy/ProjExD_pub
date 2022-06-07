@@ -208,7 +208,8 @@ class OutWall(pg.sprite.Sprite):
     self.rect.topleft = (0, 510)
 
 class Button(pg.sprite.Sprite): #ボタン用クラス
-  def __init__(self,wh,col,sc,y,num1,num2): #幅と高さ（タプル）、色、参照スクリーン、y座標、正解判定用ボタンナンバー、正解判定ナンバー
+  def __init__(self,wh,col,sc,y,num1,num2): 
+    #幅と高さ（タプル）、色、参照スクリーン、y座標、正解判定用ボタンナンバー、正解判定ナンバー
     super().__init__()
     self.width,self.height = wh
     self.image = pg.Surface((self.width,self.height))
@@ -232,7 +233,8 @@ class Button(pg.sprite.Sprite): #ボタン用クラス
       ans_jud = 1
 
 class Text(pg.sprite.Sprite): #テキスト用クラス
-  def __init__(self,text,x,y,col, s): #テキスト、y座標、色、参照スクリーン #x,y,sを追加　x:x座標、y:y座標、s:文字サイズ　青柳
+  def __init__(self,text,x,y,col, s): 
+    #テキスト、y座標、色、参照スクリーン #x,y,sを追加　x:x座標、y:y座標、s:文字サイズ　青柳
     super().__init__()
     font = pg.font.Font("ipaexg.ttf", s)
     self.image = font.render(text, True, col)
@@ -264,7 +266,8 @@ def main():
   blos = pg.sprite.Group()                      
   for x in range(1, 11):
     for y in range(1, 23):
-      blos.add(Block((0,255,0), (37.5,18), (x,y), question)) #screenを問題画像にする
+      #screenを問題画像にする
+      blos.add(Block((0,255,0), (37.5,18), (x,y), question)) 
 
   ball = Ball((0,255,100),7,paddle,blos,screen,1.5,135,45)
   screen.disp.blit(ball.image, ball.rect) 
@@ -311,7 +314,8 @@ def main():
 
     for event in pg.event.get():
       if event.type == pg.QUIT: return               # ✕ボタンでmain関数から戻る
-      if event.type == pg.MOUSEBUTTONDOWN and jud == False: #マウス左クリック判定かつボールが落下していないか判定
+      #マウス左クリック判定かつボールが落下していないか判定
+      if event.type == pg.MOUSEBUTTONDOWN and jud == False: 
         for i in range(4):
           if but[i].rect.collidepoint(event.pos): #左クリックされた位置がボタン内であるか判定
             but[i].push() #ボタンを被push状態にする

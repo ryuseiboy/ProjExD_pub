@@ -13,7 +13,7 @@ but = [] #ボタン用リスト
 jud = True
 ans_jud = 0
 
-isStart = False
+isStart = False # スタートフラグ　青柳
 
 class Screen(pg.sprite.Sprite): # Screen生成
   def __init__(self, col, wh, title):                    # 色,幅と高さ(タプル),タイトル
@@ -80,7 +80,7 @@ class Ball(pg.sprite.Sprite):
 
       # 左クリックでボール射出
       if pg.mouse.get_pressed()[0] == 1:
-          isStart = True
+          isStart = True # スタートフラグをTrueに変更　青柳
           self.dx = 0
           self.dy = -self.speed
           self.update = self.move
@@ -132,7 +132,7 @@ class Ball(pg.sprite.Sprite):
         #self.paddle_sound.play()                    # 反射音
 
       # ボールを落とした場合
-    if self.rect.top > self.screen.rect.bottom -370 or jud == False:
+    if self.rect.top > self.screen.rect.bottom -370 or jud == False: # judフラグを追加　青柳
         self.update = self.end                    # ボールを初期状態に
         #self.gameover_sound.play()
         self.hit = 0
@@ -212,7 +212,7 @@ class Button(pg.sprite.Sprite): #ボタン用クラス
       ans_jud = 1
 
 class Text(pg.sprite.Sprite): #テキスト用クラス
-  def __init__(self,text,x,y,col, s): #テキスト、y座標、色、参照スクリーン
+  def __init__(self,text,x,y,col, s): #テキスト、y座標、色、参照スクリーン #x,y,sを追加　x:x座標、y:y座標、s:文字サイズ　青柳
     super().__init__()
     font = pg.font.Font("ipaexg.ttf", s)
     self.image = font.render(text, True, col)
@@ -225,9 +225,9 @@ def main():
   num = random.randint(0,3) #正解判定用ナンバー
   clock = pg.time.Clock()
   screen = Screen((0,0,0),(450,900),"BloQuiz")
-  #C0B21002
-  time_count = 30 # 時間を追加
-  pg.time.set_timer(pg.USEREVENT, 1000) # タイマーセット
+  
+  time_count = 30 # 時間を追加　青柳
+  pg.time.set_timer(pg.USEREVENT, 1000) # タイマーセット　青柳
   txt = f'残り時間{time_count}秒'
 
   paddle = Paddle((0,255,0),(74,5),screen)
@@ -295,18 +295,19 @@ def main():
             but[1].push()
             but[2].push()
             but[3].push()
+      # isStartとjudがTrueの場合タイマー開始 青柳
       if isStart and jud:
         if event.type == pg.USEREVENT:
           time_count -= 1
           txt = f'残り時間{time_count}秒'
 
-    if time_count <= 0:
+    if time_count <= 0: # タイマーが0になった場合judがFalseに変更　青柳
       jud = False
 
     if jud:
-      text = Text(txt, 400, 20, (0, 0, 0), 15)
+      text = Text(txt, 400, 20, (0, 0, 0), 15) # テキスト設定　黒　青柳
     else:
-      text = Text(txt, 400, 20, (255, 0, 0), 15)
+      text = Text(txt, 400, 20, (255, 0, 0), 15) #テキスト設定　赤　青柳
     screen.disp.blit(text.image, text.rect)
 
     pg.display.update()  # 画面の更新

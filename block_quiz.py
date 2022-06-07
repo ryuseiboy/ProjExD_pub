@@ -239,7 +239,7 @@ class Text(pg.sprite.Sprite): #テキスト用クラス
     self.rect.bottom = y 
 
 def main():
-  global jud, isFinsh
+  global jud
   num = random.randint(0,3) #正解判定用ナンバー
   clock = pg.time.Clock()
   screen = Screen((0,0,0),(450,900),"BloQuiz")
@@ -317,7 +317,6 @@ def main():
             but[1].push()
             but[2].push()
             but[3].push()
-  
       # isStartとjudがTrueの場合タイマー開始 青柳
       if isStart and jud:
         if event.type == pg.USEREVENT:

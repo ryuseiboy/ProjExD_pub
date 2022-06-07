@@ -3,8 +3,17 @@ import sys
 import random
 import math
 
-ques = ["fig/shin.jpg","fig/ori.jpg","fig/zophi.jpg","fig/jack.jpg"] #画像ファイルリスト
-choi =["シン・ウルトラマン","ウルトラマン","ゾフィー","ウルトラマンジャック"] #選択肢テキスト用リスト
+### ([画像ファイルリスト], [選択肢リスト])を集めたリスト。
+### 問題を追加する場合は同様に([画像ファイルリスト], [選択肢リスト])をリストの要素に追記する
+### C0B21146 美尾 勇希
+ques_list = [(["fig/shin.jpg","fig/ori.jpg","fig/zophi.jpg","fig/jack.jpg"],          
+              ["シン・ウルトラマン","ウルトラマン","ゾフィー","ウルトラマンジャック"]),
+
+             (["fig/kirin.png", "fig/raion.png", "fig/ti-ta-.png", "fig/tora.png"],
+              ["キリン", "ライオン", "チーター", "トラ"])
+            ]
+ques, choi = random.choice(ques_list)      #画像ファイルリスト, 選択肢リスト (ランダムな組み合わせが選ばれる)
+
 but = [] #ボタン用リスト
 
 jud = True

@@ -1,12 +1,7 @@
-from turtle import color
-from matplotlib.pyplot import spring
-from numpy import spacing
 import pygame as pg
 import sys
 import random
 import math
-import pygame.mixer
-from pygame.locals import *
 
 ques = ["fig/shin.jpg","fig/ori.jpg","fig/zophi.jpg","fig/jack.jpg"] #画像ファイルリスト
 choi =["シン・ウルトラマン","ウルトラマン","ゾフィー","ウルトラマンジャック"] #選択肢テキスト用リスト
@@ -27,7 +22,6 @@ class Screen(pg.sprite.Sprite): # Screen生成
     self.rect= self.disp.get_rect()                                 
     # 色変更
     self.disp.fill((col))
-
 class Paddle(pg.sprite.Sprite): #Paddle生成
   def __init__(self,col,wh,sc):#色、幅と高さ（タプル）、スクリーン
     super().__init__()
@@ -185,6 +179,18 @@ class Question(pg.sprite.Sprite): #出題用画像クラス
     self.rect.left = sc.rect.left
     self.rect.top = sc.rect.top
 
+class OutWall(pg.sprite.Sprite):
+  def __init__(self,wh,col,sc):
+    super().__init__()
+    self.width,self.height = wh
+    self.image = pg.Surface((self.width,self.height))
+    self.col = col
+    self.screen = sc
+    pg.draw.rect(self.image, (255,0,0), (100,100,500,500))
+    self.rect = self.image.get_rect()
+    
+
+
 class Button(pg.sprite.Sprite): #ボタン用クラス
   def __init__(self,wh,col,sc,y,num1,num2): #幅と高さ（タプル）、色、参照スクリーン、y座標、正解判定用ボタンナンバー、正解判定ナンバー
     super().__init__()
@@ -212,7 +218,7 @@ class Button(pg.sprite.Sprite): #ボタン用クラス
 class Text(pg.sprite.Sprite): #テキスト用クラス
   def __init__(self,text,y,col,sc): #テキスト、y座標、色、参照スクリーン
     super().__init__()
-    font = pg.font.SysFont("ヒラキノ角コシックw9", 30)
+    font = pg.font.SysFont("ipaexg.ttf", 30)
     self.image = font.render(text, True, col)
     self.rect = self.image.get_rect()
     self.screen = sc
@@ -230,6 +236,7 @@ def main():
 
   question =Question((ques[num]),1,screen)
   screen.disp.blit(question.image,question.rect)
+
   
   # ブロックの作成(10*22)
   blos = pg.sprite.Group()                      
@@ -239,6 +246,10 @@ def main():
 
   ball = Ball((0,255,100),7,paddle,blos,screen,1.5,135,45)
   screen.disp.blit(ball.image, ball.rect) 
+
+  #当たったらだめの壁を生成
+  kabe=OutWall((500,10),(255,0,0),screen)
+  screen.disp.blit(kabe.image,kabe.rect)
 
   #ボタンの作成
   cnt =0
@@ -268,6 +279,7 @@ def main():
     paddle.update()                               # paddleの位置更新
     screen.disp.blit(paddle.image, paddle.rect)           # paddle画像更新
 
+
     blos.draw(screen.disp) #ブロック画像更新
 
     ball.update() #ballの位置更新
@@ -278,6 +290,9 @@ def main():
       but[i].update()
 
     texts.draw(screen.disp)
+
+    kabe.update()
+    screen.disp.blit(kabe.image, kabe.rect)
 
     for event in pg.event.get():
       if event.type == pg.QUIT: return               # ✕ボタンでmain関数から戻る

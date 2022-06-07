@@ -3,12 +3,26 @@ import sys
 import random
 import math
 
-ques = ["fig/shin.jpg","fig/ori.jpg","fig/zophi.jpg","fig/jack.jpg"] #画像ファイルリスト
-choi =["シン・ウルトラマン","ウルトラマン","ゾフィー","ウルトラマンジャック"] #選択肢テキスト用リスト
+### ([画像ファイルリスト], [選択肢リスト])を集めたリスト。
+### 問題を追加する場合は同様に([画像ファイルリスト], [選択肢リスト])をリストの要素に追記する
+### C0B21146 美尾 勇希
+ques_list = [(["fig/shin.jpg","fig/ori.jpg","fig/zophi.jpg","fig/jack.jpg"],          
+              ["シン・ウルトラマン","ウルトラマン","ゾフィー","ウルトラマンジャック"]),
+
+             (["fig/kirin.png", "fig/raion.png", "fig/ti-ta-.png", "fig/tora.png"],
+              ["キリン", "ライオン", "チーター", "トラ"]),
+
+              (['fig/keppengin.jpg', 'fig/panda.jpg', 'fig/raion.jpg', 'fig/ressapanda.jpg'],
+              ['ケープペンギン', 'パンダ', 'ライオン', 'レッサーパンダ'])
+            ]
+ques, choi = random.choice(ques_list)      #画像ファイルリスト, 選択肢リスト (ランダムな組み合わせが選ばれる)
+
 but = [] #ボタン用リスト
 
 jud = True
 ans_jud = 0
+
+isStart = False # スタートフラグ　青柳
 
 class Screen(pg.sprite.Sprite): # Screen生成
   def __init__(self, col, wh, title):                    # 色,幅と高さ(タプル),タイトル
@@ -22,6 +36,7 @@ class Screen(pg.sprite.Sprite): # Screen生成
     self.rect= self.disp.get_rect()                                 
     # 色変更
     self.disp.fill((col))
+
 class Paddle(pg.sprite.Sprite): #Paddle生成
   def __init__(self,col,wh,sc):#色、幅と高さ（タプル）、スクリーン
     super().__init__()
@@ -67,12 +82,14 @@ class Ball(pg.sprite.Sprite):
     self.angle_right = angri # パドルの反射方向(右端:45度）
 
   def start(self):
+      global isStart
       # ボールの初期位置(パドルの上)
       self.rect.centerx = self.paddle.rect.centerx
       self.rect.bottom = self.paddle.rect.top
 
       # 左クリックでボール射出
       if pg.mouse.get_pressed()[0] == 1:
+          isStart = True # スタートフラグをTrueに変更　青柳
           self.dx = 0
           self.dy = -self.speed
           self.update = self.move
@@ -124,7 +141,7 @@ class Ball(pg.sprite.Sprite):
         #self.paddle_sound.play()                    # 反射音
 
       # ボールを落とした場合
-    if self.rect.top > self.screen.rect.bottom -370:
+    if self.rect.top > self.screen.rect.bottom -370 or jud == False: # judフラグを追加　青柳
         self.update = self.end                    # ボールを初期状態に
         #self.gameover_sound.play()
         self.hit = 0
@@ -180,16 +197,13 @@ class Question(pg.sprite.Sprite): #出題用画像クラス
     self.rect.top = sc.rect.top
 
 class OutWall(pg.sprite.Sprite):
-  def __init__(self,wh,col,sc):
+  def __init__(self,wh,col):
     super().__init__()
     self.width,self.height = wh
     self.image = pg.Surface((self.width,self.height))
-    self.col = col
-    self.screen = sc
-    pg.draw.rect(self.image, (255,0,0), (100,100,500,500))
+    pg.draw.rect(self.image, col, (0,0,self.width,self.height))
     self.rect = self.image.get_rect()
-    self.rect.centery = 515
-
+    self.rect.topleft = (0, 510)
 
 class Button(pg.sprite.Sprite): #ボタン用クラス
   def __init__(self,wh,col,sc,y,num1,num2): #幅と高さ（タプル）、色、参照スクリーン、y座標、正解判定用ボタンナンバー、正解判定ナンバー
@@ -216,27 +230,33 @@ class Button(pg.sprite.Sprite): #ボタン用クラス
       ans_jud = 1
 
 class Text(pg.sprite.Sprite): #テキスト用クラス
-  def __init__(self,text,y,col,sc): #テキスト、y座標、色、参照スクリーン
+  def __init__(self,text,x,y,col, s): #テキスト、y座標、色、参照スクリーン #x,y,sを追加　x:x座標、y:y座標、s:文字サイズ　青柳
     super().__init__()
-    font = pg.font.SysFont("ipaexg.ttf", 30)
+    font = pg.font.Font("ipaexg.ttf", s)
     self.image = font.render(text, True, col)
     self.rect = self.image.get_rect()
-    self.screen = sc
-    self.y = y
-    self.rect.centerx = self.screen.rect.centerx
-    self.rect.bottom = self.screen.rect.centery + self.y 
+    self.rect.centerx = x
+    self.rect.bottom = y 
 
 def main():
+  global jud, isFinsh
   num = random.randint(0,3) #正解判定用ナンバー
   clock = pg.time.Clock()
   screen = Screen((0,0,0),(450,900),"BloQuiz")
+  
+  time_count = 30 # 時間を追加　青柳
+  pg.time.set_timer(pg.USEREVENT, 1000) # タイマーセット　青柳
+  txt = f'残り時間{time_count}秒'
 
   paddle = Paddle((0,255,0),(74,5),screen)
   screen.disp.blit(paddle.image, paddle.rect)
 
+  2
+  #当たったらだめの壁を生成
+  kabe=OutWall((screen.rect.width, 5),(250,0,0))
+
   question =Question((ques[num]),1,screen)
   screen.disp.blit(question.image,question.rect)
-
   
   # ブロックの作成(10*22)
   blos = pg.sprite.Group()                      
@@ -246,9 +266,6 @@ def main():
 
   ball = Ball((0,255,100),7,paddle,blos,screen,1.5,135,45)
   screen.disp.blit(ball.image, ball.rect) 
-
-  #当たったらだめの壁を生成
-  kabe=OutWall((500,10),(255,0,0),screen)
 
   #ボタンの作成
   cnt =0
@@ -267,18 +284,17 @@ def main():
   texts = pg.sprite.Group()
   cont =0
   for i in range(110,321,70):
-    texts.add(Text(choi[cont],i,(255,255,255),screen))
+    texts.add(Text(choi[cont],screen.rect.centerx,screen.rect.centery + i,(255,255,255), 30))
     cont += 1
  
   while True:
-    screen.disp.fill((255,255,255))            # Screen画像更新
+    screen.disp.fill((0,0,0))            # Screen画像更新
 
     screen.disp.blit(question.image,question.rect) #question画像更新
 
     paddle.update()                               # paddleの位置更新
     screen.disp.blit(paddle.image, paddle.rect)           # paddle画像更新
 
-    screen.disp.blit(kabe.image, kabe.rect)
     blos.draw(screen.disp) #ブロック画像更新
 
     ball.update() #ballの位置更新
@@ -289,9 +305,6 @@ def main():
       but[i].update()
 
     texts.draw(screen.disp)
-
-    
-    
 
     for event in pg.event.get():
       if event.type == pg.QUIT: return               # ✕ボタンでmain関数から戻る
@@ -304,8 +317,22 @@ def main():
             but[1].push()
             but[2].push()
             but[3].push()
+  
+      # isStartとjudがTrueの場合タイマー開始 青柳
+      if isStart and jud:
+        if event.type == pg.USEREVENT:
+          time_count -= 1
+          txt = f'残り時間{time_count}秒'
 
+    if time_count <= 0: # タイマーが0になった場合judがFalseに変更　青柳
+      jud = False
 
+    if jud:
+      text = Text(txt, 400, 20, (0, 0, 0), 15) # テキスト設定　黒　青柳
+    else:
+      text = Text(txt, 400, 20, (255, 0, 0), 15) #テキスト設定　赤　青柳
+    screen.disp.blit(text.image, text.rect)
+    screen.disp.blit(kabe.image,kabe.rect)
 
     pg.display.update()  # 画面の更新
     clock.tick(1000) 

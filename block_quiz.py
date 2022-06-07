@@ -196,6 +196,15 @@ class Question(pg.sprite.Sprite): #出題用画像クラス
     self.rect.left = sc.rect.left
     self.rect.top = sc.rect.top
 
+class OutWall(pg.sprite.Sprite):
+  def __init__(self,wh,col):
+    super().__init__()
+    self.width,self.height = wh
+    self.image = pg.Surface((self.width,self.height))
+    pg.draw.rect(self.image, col, (0,0,self.width,self.height))
+    self.rect = self.image.get_rect()
+    self.rect.topleft = (0, 510)
+
 class Button(pg.sprite.Sprite): #ボタン用クラス
   def __init__(self,wh,col,sc,y,num1,num2): #幅と高さ（タプル）、色、参照スクリーン、y座標、正解判定用ボタンナンバー、正解判定ナンバー
     super().__init__()
@@ -241,6 +250,10 @@ def main():
 
   paddle = Paddle((0,255,0),(74,5),screen)
   screen.disp.blit(paddle.image, paddle.rect)
+
+  2
+  #当たったらだめの壁を生成
+  kabe=OutWall((screen.rect.width, 5),(250,0,0))
 
   question =Question((ques[num]),1,screen)
   screen.disp.blit(question.image,question.rect)
@@ -318,6 +331,7 @@ def main():
     else:
       text = Text(txt, 400, 20, (255, 0, 0), 15) #テキスト設定　赤　青柳
     screen.disp.blit(text.image, text.rect)
+    screen.disp.blit(kabe.image,kabe.rect)
 
     pg.display.update()  # 画面の更新
     clock.tick(1000) 

@@ -1,6 +1,4 @@
 from turtle import color
-from matplotlib.pyplot import spring
-from numpy import spacing
 import pygame as pg
 import sys
 import random
@@ -14,6 +12,8 @@ but = [] #ボタン用リスト
 
 jud = True
 ans_jud = 0
+
+isStart = False
 
 class Screen(pg.sprite.Sprite): # Screen生成
   def __init__(self, col, wh, title):                    # 色,幅と高さ(タプル),タイトル
@@ -73,12 +73,14 @@ class Ball(pg.sprite.Sprite):
     self.angle_right = angri # パドルの反射方向(右端:45度）
 
   def start(self):
+      global isStart
       # ボールの初期位置(パドルの上)
       self.rect.centerx = self.paddle.rect.centerx
       self.rect.bottom = self.paddle.rect.top
 
       # 左クリックでボール射出
       if pg.mouse.get_pressed()[0] == 1:
+          isStart = True
           self.dx = 0
           self.dy = -self.speed
           self.update = self.move
@@ -130,7 +132,7 @@ class Ball(pg.sprite.Sprite):
         #self.paddle_sound.play()                    # 反射音
 
       # ボールを落とした場合
-    if self.rect.top > self.screen.rect.bottom -370:
+    if self.rect.top > self.screen.rect.bottom -370 or jud == False:
         self.update = self.end                    # ボールを初期状態に
         #self.gameover_sound.play()
         self.hit = 0
@@ -210,20 +212,23 @@ class Button(pg.sprite.Sprite): #ボタン用クラス
       ans_jud = 1
 
 class Text(pg.sprite.Sprite): #テキスト用クラス
-  def __init__(self,text,y,col,sc): #テキスト、y座標、色、参照スクリーン
+  def __init__(self,text,x,y,col, s): #テキスト、y座標、色、参照スクリーン
     super().__init__()
-    font = pg.font.SysFont("ヒラキノ角コシックw9", 30)
+    font = pg.font.Font("ipaexg.ttf", s)
     self.image = font.render(text, True, col)
     self.rect = self.image.get_rect()
-    self.screen = sc
-    self.y = y
-    self.rect.centerx = self.screen.rect.centerx
-    self.rect.bottom = self.screen.rect.centery + self.y 
+    self.rect.centerx = x
+    self.rect.bottom = y 
 
 def main():
+  global jud
   num = random.randint(0,3) #正解判定用ナンバー
   clock = pg.time.Clock()
   screen = Screen((0,0,0),(450,900),"BloQuiz")
+  #C0B21002
+  time_count = 30 # 時間を追加
+  pg.time.set_timer(pg.USEREVENT, 1000) # タイマーセット
+  txt = f'残り時間{time_count}秒'
 
   paddle = Paddle((0,255,0),(74,5),screen)
   screen.disp.blit(paddle.image, paddle.rect)
@@ -257,7 +262,7 @@ def main():
   texts = pg.sprite.Group()
   cont =0
   for i in range(110,321,70):
-    texts.add(Text(choi[cont],i,(255,255,255),screen))
+    texts.add(Text(choi[cont],screen.rect.centerx,screen.rect.centery + i,(255,255,255), 30))
     cont += 1
  
   while True:
@@ -290,8 +295,19 @@ def main():
             but[1].push()
             but[2].push()
             but[3].push()
+      if isStart and jud:
+        if event.type == pg.USEREVENT:
+          time_count -= 1
+          txt = f'残り時間{time_count}秒'
 
+    if time_count <= 0:
+      jud = False
 
+    if jud:
+      text = Text(txt, 400, 20, (0, 0, 0), 15)
+    else:
+      text = Text(txt, 400, 20, (255, 0, 0), 15)
+    screen.disp.blit(text.image, text.rect)
 
     pg.display.update()  # 画面の更新
     clock.tick(1000) 
